@@ -39,9 +39,9 @@ router.post('/', (req, res) => {
        
         // const userId = getInsertUserId(username);
 
-        let params = [email, salted_hash, salt];
+        let params = [1, email, salted_hash, salt];
 
-        db.none("INSERT INTO logins (1, email, password, salt) VALUES ($1, $2, $3)", params)
+        db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
             .then(() => {
                 // We successfully added the user, let the user know
                 res.send({

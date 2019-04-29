@@ -21,14 +21,15 @@ router.post('/', (req, res) => {
     res.type("application/json");
 
     //Retrieve data from query params
-    var first = req.body['first'];
-    var last = req.body['last'];
     var username = req.body['username'];
     var email = req.body['email'];
     var password = req.body['password'];
+
+
+
+
     //Verify that the caller supplied all the parameters
-    //In js, empty strings or null values evaluate to false
-    if(first && last && username && email && password) {
+    if(username && email && password) {
         //We're storing salted hashes to make our application more secure
         //If you're interested as to what that is, and why we should use it
         //watch this youtube video: https://www.youtube.com/watch?v=8ZtInClXe1Q
@@ -38,8 +39,11 @@ router.post('/', (req, res) => {
         //Use .none() since no result gets returned from an INSERT in SQL
         //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
         //If you want to read more: https://stackoverflow.com/a/8265319
-        let params = [first, last, username, email, salted_hash, salt];
-        db.none("INSERT INTO MEMBERS(FirstName, LastName, Username, Email, Password, Salt) VALUES ($1, $2, $3, $4, $5, $6)", params)
+        let params = [userId, email, salted_hash, salt];
+
+        const userId = getInsertUserId(username);
+
+        db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
             .then(() => {
                 //We successfully added the user, let the user know
                 res.send({
@@ -64,5 +68,15 @@ router.post('/', (req, res) => {
         });
     }
 });
+
+https://github.com/vitaly-t/pg-promise/blob/master/examples/select-insert.md
+function getInsertUserId(name) {
+    return db.task('getInsertUserId', t => {
+            return t.oneOrNone('SELECT id FROM users WHERE name = $1', name, u => u && u.id)
+                .then(userId => {
+                    return userId || t.one('INSERT INTO Users(name) VALUES($1) RETURNING id', name, u => u.id);
+                });
+        });
+}
 
 module.exports = router;

@@ -97,5 +97,3 @@ INSERT INTO messages(sender_id, message_body)
 INSERT INTO messages(sender_id, message_body) 
     VALUES((SELECT id FROM users WHERE username = 'other-test'),
             'Im well how are you?');
-
-

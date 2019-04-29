@@ -37,7 +37,8 @@ router.post('/', (req, res) => {
                 let wasCorrectPw = ourSaltedHash === theirSaltedHash;
 
                 if (wasCorrectPw) {
-                    //credentials match. get a new JWT
+                    //credentials match. get a new JWT  
+                    // optional for project
                     let token = jwt.sign({username: email},
                         config.secret,
                         {

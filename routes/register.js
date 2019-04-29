@@ -25,9 +25,6 @@ router.post('/', (req, res) => {
     var email = req.body['email'];
     var password = req.body['password'];
 
-
-
-
     //Verify that the caller supplied all the parameters
     if(username && email && password) {
         //We're storing salted hashes to make our application more secure
@@ -39,9 +36,9 @@ router.post('/', (req, res) => {
         //Use .none() since no result gets returned from an INSERT in SQL
         //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
         //If you want to read more: https://stackoverflow.com/a/8265319
-        let params = [userId, email, salted_hash, salt];
-
+       
         const userId = getInsertUserId(username);
+        let params = [userId, email, salted_hash, salt];
 
         db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
             .then(() => {

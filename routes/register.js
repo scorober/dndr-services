@@ -38,6 +38,7 @@ router.post('/', (req, res) => {
         //If you want to read more: https://stackoverflow.com/a/8265319
        
         const userId = getInsertUserId(username);
+
         let params = [userId, email, salted_hash, salt];
 
         db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
@@ -46,7 +47,7 @@ router.post('/', (req, res) => {
                 res.send({
                     success: true
                 });
-                sendEmail("uwnetid@uw.edu", email, "Welcome!", "<strong>Welcome to our app!</strong>");
+                // sendEmail("uwnetid@uw.edu", email, "Welcome!", "<strong>Welcome to our app!</strong>");
             }).catch((err) => {
             //log the error
             console.log(err);

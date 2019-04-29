@@ -38,10 +38,15 @@ router.post('/', (req, res) => {
         //If you want to read more: https://stackoverflow.com/a/8265319
        
         // const userId = getInsertUserId(username);
+        // console.log(userId)
 
-        let params = [1, email, salted_hash, salt];
 
-        db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
+        getInsertUserId(username)
+        .then(userId => {
+            // use the id;
+            let params = [userId, email, salted_hash, salt];
+
+            db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
             .then(() => {
                 // We successfully added the user, let the user know
                 res.send({
@@ -58,6 +63,13 @@ router.post('/', (req, res) => {
                 error: err
             });
         });
+            
+        }).catch(err => {
+        
+            console.log(err);
+        });
+
+      
     } else {
         res.send({
             success: false,
@@ -68,11 +80,11 @@ router.post('/', (req, res) => {
 });
 
 https://github.com/vitaly-t/pg-promise/blob/master/examples/select-insert.md
-function getInsertUserId(name) {
+function getInsertUserId(username) {
     return db.task('getInsertUserId', t => {
-            return t.oneOrNone('SELECT id FROM users WHERE name = $1', name, u => u && u.id)
+            return t.oneOrNone('SELECT id FROM users WHERE username = $1', username, u => u && u.id)
                 .then(userId => {
-                    return userId || t.one('INSERT INTO Users(name) VALUES($1) RETURNING id', name, u => u.id);
+                    return userId || t.one('INSERT INTO Users(username) VALUES($1) RETURNING id', username, u => u.id);
                 });
         });
 }

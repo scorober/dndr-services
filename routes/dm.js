@@ -8,15 +8,13 @@ const bodyParser = require("body-parser");
 //This allows parsing of the body of POST requests, that are encoded in JSON
 router.use(bodyParser.json());
 
-router.post("/addcourse", (req, res) => {
+router.post("/adddm", (req, res) => {
     // Parameters for the courses
-    let id = req.body['id'];
-    let shortdesc = req.body['shortdesc'];
-    let longdesc = req.body['longdesc'];
-    let prereqs = req.body['prereqs'];
+    let user_id = req.body['user_id'];
+    let campaign_id = req.body['campaign_id'];
 
-    if (id && shortdesc && longdesc && prereqs) {
-        db.none("INSERT INTO courses VALUES ($1, $2, $3, $4)", [id, shortdesc, longdesc, prereqs])
+    if (user_id && campaign_id) {
+        db.none("INSERT INTO dms VALUES ($1, $2)", [user_id, campaign_id])
             .then(() => {
                 //We successfully added the course, let the user know
                 res.send({
@@ -39,6 +37,7 @@ router.post("/addcourse", (req, res) => {
     }
 });
 
+// Probably need a POST with users id
 router.get("/courses", (req, res) => {
 
     db.manyOrNone('SELECT * FROM courses')

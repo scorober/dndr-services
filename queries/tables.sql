@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS groups CASCADE;
 
 CREATE TABLE users (id SERIAL PRIMARY KEY,
-                    username VARCHAR(255) NOT NULL,
+                    username VARCHAR(255) UNIQUE NOT NULL,
                     is_active BOOLEAN NOT NULL DEFAULT FALSE,
                     create_date DATE NOT NULL DEFAULT CURRENT_DATE
 );
@@ -23,7 +23,7 @@ CREATE TABLE logins (id SERIAL PRIMARY KEY,
                      user_id INTEGER REFERENCES users(id),
                      email VARCHAR(255) NOT NULL UNIQUE,
                      password VARCHAR(255) NOT NULL,
-                     SALT VARCHAR(255),
+                     salt VARCHAR(255),
                      Verification INT DEFAULT 0);
 
 CREATE TABLE threads (id SERIAL PRIMARY KEY, 
@@ -70,7 +70,7 @@ CREATE TABLE friends (id SERIAL PRIMARY KEY,
 
 
 INSERT INTO users (username) VALUES('scorober-test');
-INSERT INTO users (username) VALUES('sissi-test');
+INSERT INTO users (username) VALUES('other-test');
 
 
 INSERT INTO logins (user_id, email, password) 

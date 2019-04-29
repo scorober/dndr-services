@@ -41,18 +41,18 @@ router.post('/', (req, res) => {
 
         let params = [userId, email, salted_hash, salt];
 
-        db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
+        db.none("INSERT INTO logins (1, email, password, salt) VALUES ($1, $2, $3, $4)", params)
             .then(() => {
-                //We successfully added the user, let the user know
+                // We successfully added the user, let the user know
                 res.send({
                     success: true
                 });
                 // sendEmail("uwnetid@uw.edu", email, "Welcome!", "<strong>Welcome to our app!</strong>");
             }).catch((err) => {
-            //log the error
+            // log the error
             console.log(err);
-            //If we get an error, it most likely means the account already exists
-            //Therefore, let the requester know they tried to create an account that already exists
+            // If we get an error, it most likely means the account already exists
+            // Therefore, let the requester know they tried to create an account that already exists
             res.send({
                 success: false,
                 error: err

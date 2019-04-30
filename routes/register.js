@@ -17,6 +17,11 @@ const bodyParser = require("body-parser");
 //This allows parsing of the body of POST requests, that are encoded in JSON
 router.use(bodyParser.json());
 
+/**
+ * Add a login for a user. 
+ * Generate a salted_hash.
+ * TODO add email
+ */
 router.post('/', (req, res) => {
     res.type("application/json");
 
@@ -33,53 +38,47 @@ router.post('/', (req, res) => {
         let salt = crypto.randomBytes(32).toString("hex");
         let salted_hash = getHash(password, salt);
 
-        //Use .none() since no result gets returned from an INSERT in SQL
-        //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
-        //If you want to read more: https://stackoverflow.com/a/8265319
-       
-        // const userId = getInsertUserId(username);
-        // console.log(userId)
-
-
         getInsertUserId(username)
         .then(userId => {
-            // use the id;
             let params = [userId, email, salted_hash, salt];
-
+            // Use .none() since no result gets returned from an INSERT in SQL
+            // We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
+            // If you want to read more: https://stackoverflow.com/a/8265319
             db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
             .then(() => {
-                // We successfully added the user, let the user know
                 res.send({
                     success: true
                 });
                 // sendEmail("uwnetid@uw.edu", email, "Welcome!", "<strong>Welcome to our app!</strong>");
             }).catch((err) => {
-            // log the error
             console.log(err);
-            // If we get an error, it most likely means the account already exists
-            // Therefore, let the requester know they tried to create an account that already exists
             res.send({
                 success: false,
                 error: err
             });
         });
-            
         }).catch(err => {
-        
             console.log(err);
         });
-
-      
     } else {
         res.send({
             success: false,
             input: req.body,
-            error: "Missing required user information"
+            error: "Missing required login information"
         });
     }
 });
 
-https://github.com/vitaly-t/pg-promise/blob/master/examples/select-insert.md
+
+/**
+ * https://github.com/vitaly-t/pg-promise/blob/master/examples/select-insert.md
+ * @param {String} username Username of new user.
+ * Inserts user into the users table OR finds the entry for the same username. 
+ * Returns the id for that user.
+ * 
+ * TODO If the usernames here the registration should be aborted and the 
+ * user should be notified the username exists.
+ */
 function getInsertUserId(username) {
     return db.task('getInsertUserId', t => {
             return t.oneOrNone('SELECT id FROM users WHERE username = $1', username, u => u && u.id)
@@ -88,5 +87,4 @@ function getInsertUserId(username) {
                 });
         });
 }
-
 module.exports = router;

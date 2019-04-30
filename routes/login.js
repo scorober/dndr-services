@@ -18,13 +18,17 @@ let config = {
     secret: process.env.JSON_WEB_TOKEN
 };
 
+/**
+ * Logs the user in
+ * 
+ */
 router.post('/', (req, res) => {
     let email = req.body['email'];
     let theirPw = req.body['password'];
     let wasSuccessful = false;
     if(email && theirPw) {
         //Using the 'one' method means that only one row should be returned
-        db.one('SELECT password, salt FROM logins WHERE Email=$1', [email])
+        db.one('SELECT password, salt FROM logins WHERE email=$1', [email])
             .then(row => { //If successful, run function passed into .then()
                 let salt = row['salt'];
                 //Retrieve our copy of the password

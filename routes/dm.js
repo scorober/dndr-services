@@ -8,7 +8,10 @@ const bodyParser = require("body-parser");
 //This allows parsing of the body of POST requests, that are encoded in JSON
 router.use(bodyParser.json());
 
-router.post("/adddm", (req, res) => {
+/**
+ * Assigns a dm to a campaign.
+ */
+router.post("/assigndm", (req, res) => {
     // Parameters for the courses
     let user_id = req.body['user_id'];
     let campaign_id = req.body['campaign_id'];

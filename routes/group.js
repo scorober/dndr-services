@@ -15,7 +15,7 @@ router.post("/addgroup", (req, res) => {
     let desc = req.body['desc'];
 
     if (title && desc) {
-        db.none("INSERT INTO groups (title, desc) VALUES ($1, $2)", [title, desc])
+        db.none("INSERT INTO groups (title, description) VALUES ($1, $2)", [title, desc])
             .then(() => {
                 //We successfully added the course, let the user know
                 res.send({

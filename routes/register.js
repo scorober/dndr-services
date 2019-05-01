@@ -20,7 +20,7 @@ router.use(bodyParser.json());
 /**
  * Add a login for a user. 
  * Generate a salted_hash.
- * TODO add email
+ * TODO: add email
  */
 router.post('/', (req, res) => {
     res.type("application/json");
@@ -76,7 +76,7 @@ router.post('/', (req, res) => {
  * Inserts user into the users table OR finds the entry for the same username. 
  * Returns the id for that user.
  * 
- * TODO If the usernames here the registration should be aborted and the 
+ * TODO: If the usernames here the registration should be aborted and the 
  * user should be notified the username exists.
  */
 function getInsertUserId(username) {

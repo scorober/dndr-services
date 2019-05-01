@@ -40,8 +40,12 @@ router.post("/assigndm", (req, res) => {
     }
 });
 
+router.post("/create", (req, res) => {
+    
+})
+
 // Probably need a POST with users id
-router.get("/courses", (req, res) => {
+router.post("/mycampaigns", (req, res) => {
 
     db.manyOrNone('SELECT * FROM courses')
     //If successful, run function passed into .then()

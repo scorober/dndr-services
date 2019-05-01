@@ -3,17 +3,22 @@ const express = require('express');
 //Create a new instance of express
 const app = express();
 
+
+let middleware = require('./utilities/middleware');
+
+// 
+app.use('/groups', require('./routes/group.js'));
+
+
 app.use('/login', require('./routes/login.js'));
-app.use('/dm', require('./routes/dm.js'))
+app.use('/dm', require('./routes/dm.js'));
 app.use('/register', require('./routes/register.js'));
 app.use('/hello', require('./routes/hello.js'));
 app.use('/params', require('./routes/params.js'));
 app.use('/wait', require('./routes/wait.js'));
 
-let middleware = require('./utilities/middleware');
 
-
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 //This allows parsing of the body of POST requests, that are encoded in JSON
 app.use(bodyParser.json());
 
@@ -38,7 +43,7 @@ if(!db) {
 /*
  * Return HTML for the / end point. 
  * This is a nice location to document your web service API
- * Create a web page in HTML/CSS and have this end point return it. 
+ * TODO: Create a web page in HTML/CSS and have this end point return it. 
  * Look up the node module 'fs' ex: require('fs');
  */
 app.get("/", (req, res) => {

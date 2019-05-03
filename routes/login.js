@@ -19,8 +19,7 @@ let config = {
 };
 
 /**
- * Logs the user in
- * 
+ * Logs the user in using JWT.
  */
 router.post('/', (req, res) => {
     let email = req.body['email'];

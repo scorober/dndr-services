@@ -6,15 +6,12 @@ const app = express();
 
 let middleware = require('./utilities/middleware');
 
-// 
+
 app.use('/groups', require('./routes/group.js'));
-
-
 app.use('/login', require('./routes/login.js'));
-app.use('/dm', require('./routes/dm.js'));
+app.use('/campaign', require('./routes/campaign.js'));
 app.use('/register', require('./routes/register.js'));
 app.use('/hello', require('./routes/hello.js'));
-app.use('/params', require('./routes/params.js'));
 app.use('/wait', require('./routes/wait.js'));
 
 

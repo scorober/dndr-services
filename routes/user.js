@@ -6,21 +6,26 @@ const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
 
-router.get("/users", (req, res) => {
-    db.manyOrNone('SELECT * FROM users')
+/**
+ *GETS a user by id and returns full entry.
+ TODO: add access by username
+ */
+router.get("/user", (req, res) => {
+    const user_id = req.query['user_id'];
+    db.manyOrNone('SELECT * FROM users WHERE id = $1', [user_id])
     .then((data) => {
         res.send({
             success:true,
-            users: data
+            data: data
         });
     }).catch((err) => {
-    console.log(err);
-    res.send({
-        success: false,
-        error: err
+        console.log(err);
+        res.send({
+            success: false,
+            error: err
+        })
     })
-})
-})
+});
 
 /** 
  * GET request to search for a user by username or id.

@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS logins;
+DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS user_thread;
 DROP TABLE IF EXISTS message_thread;
 DROP TABLE IF EXISTS campaigns;
@@ -13,7 +14,10 @@ DROP TABLE IF EXISTS groups CASCADE;
 CREATE TABLE users (id SERIAL PRIMARY KEY,
                     username VARCHAR(255)  NOT NULL UNIQUE,
                     is_active BOOLEAN NOT NULL DEFAULT FALSE,
-                    create_date DATE NOT NULL DEFAULT CURRENT_DATE
+                    create_date DATE NOT NULL DEFAULT CURRENT_DATE,
+                    short_desc VARCHAR(255),
+                    long_desc VARCHAR(255),
+                    player_level INTEGER CHECK (player_level BETWEEN 1 AND 3)
 );
 
 CREATE TABLE logins (id SERIAL PRIMARY KEY,
@@ -61,7 +65,20 @@ CREATE TABLE campaigns (id SERIAL PRIMARY KEY,
                        group_id INTEGER REFERENCES groups(id),
                        is_active BOOLEAN NOT NULL DEFAULT FALSE);
 
-CREATE TABLE friends (id SERIAL PRIMARY KEY,
+/*
+    Added a constraint so that user1_id must be lower than user2_id.  Always query the database as [min, max].
+    Also prevents friending self.
+*/
+CREATE TABLE friends (id SERIAL,
                       user1_id INTEGER REFERENCES users(id),
                       user2_id INTEGER REFERENCES users(id) CHECK (user1_id < user2_id),
-                      create_date TIMESTAMP DEFAULT CURRENT_DATE); 
+                      create_date TIMESTAMP DEFAULT CURRENT_DATE,
+                      pending BOOLEAN DEFAULT TRUE,
+                      PRIMARY KEY (user1_id, user2_id)); 
+
+CREATE TABLE reviews (id SERIAL,
+                      reviewed_id INTEGER REFERENCES users(id),
+                      reviewer_id INTEGER REFERENCES users(id),
+                      body VARCHAR(150),
+                      rating INTEGER CHECK (rating BETWEEN 0 AND 5),
+                      PRIMARY KEY (reviewed_id, reviewer_id));

@@ -76,7 +76,6 @@ router.post('/adduser', (req, res) => {
     if (user_id && group_id) {
         db.none("INSERT INTO user_group (user_id, group_id) VALUES ($1, $2)", [user_id, group_id])
         .then(() => {
-            //We successfully added the course, let the user know
             res.send({
                 success: true
             });

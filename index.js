@@ -11,8 +11,7 @@ app.use('/groups', require('./routes/group.js'));
 app.use('/login', require('./routes/login.js'));
 app.use('/campaign', require('./routes/campaign.js'));
 app.use('/register', require('./routes/register.js'));
-app.use('/hello', require('./routes/hello.js'));
-app.use('/wait', require('./routes/wait.js'));
+app.use('/u', require('./routes/user.js'));
 
 
 const bodyParser = require('body-parser');

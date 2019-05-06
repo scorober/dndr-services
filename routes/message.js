@@ -1,3 +1,8 @@
+/*
+    Messaging endpoint, unfinished.
+
+*/
+
 const express = require('express');
 const db = require('../utilities/sqlconn.js');
 var router = express.Router();

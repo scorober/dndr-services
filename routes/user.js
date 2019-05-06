@@ -7,8 +7,7 @@ const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 
 /**
- *GETS a user by id and returns full entry.
- TODO: add access by username
+ * @deprecated Use '/search' instead
  */
 router.get("/user", (req, res) => {
     const user_id = req.query['user_id'];

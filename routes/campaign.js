@@ -1,11 +1,13 @@
+/*
+    Campaigns relation backend endpoints.
+
+*/
 const express = require('express');
-
 const db = require('../utilities/sqlconn.js');
-
 var router = express.Router();
 
 const bodyParser = require("body-parser");
-//This allows parsing of the body of POST requests, that are encoded in JSON
+
 router.use(bodyParser.json());
 
 /**
@@ -40,15 +42,22 @@ router.post("/assigndm", (req, res) => {
     }
 });
 
+
+// TODO: Update campaign table with group_id, create group if DNE?
+router.post("/assigngroup", (req, res) => {
+    const group_id = req.body['group_id'];
+    const campaign_id = req.body['campaign_id'];
+});
+
+// TODO: Create campaign, should create group and threads.
 router.post("/create", (req, res) => {
     
-})
+});
 
-// Probably need a POST with users id
+
+// TODO: Stub, unfinished. Join on group and user ids, return campaign info.
 router.post("/mycampaigns", (req, res) => {
-
     db.manyOrNone('SELECT * FROM courses')
-    //If successful, run function passed into .then()
         .then((data) => {
             res.send({
                 success: true,

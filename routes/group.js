@@ -1,3 +1,8 @@
+/*
+    Group endpoints.
+
+*/
+
 const express = require('express');
 const db = require('../utilities/sqlconn.js');
 
@@ -69,7 +74,7 @@ router.post("/mygroups", (req, res) => {
 /**
  * Insert a user into a group.
  */
-router.post('/adduser', (req, res) => {
+router.post('/join', (req, res) => {
     let user_id = req.body['user_id'];
     let group_id = req.body['group_id'];
     

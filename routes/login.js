@@ -20,11 +20,12 @@ let config = {
 
 /**
  * Logs the user in using JWT.
+ * Returns the user id of the login.
  */
 router.post('/', (req, res) => {
     let email = req.body['email'];
     let theirPw = req.body['password'];
-    let wasSuccessful = false;
+    
     if(email && theirPw) {
         //Using the 'one' method means that only one row should be returned
         db.one('SELECT user_id, password, salt FROM logins WHERE email=$1', [email])
@@ -53,7 +54,7 @@ router.post('/', (req, res) => {
                         success: true,
                         message: 'Authentication successful!',
                         token: token,
-                        user_id: row.user_id
+                        user_id: row.user_id  // return user id belonging to login
                     });
                 } else {
                     //credentials did not match

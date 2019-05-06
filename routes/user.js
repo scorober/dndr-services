@@ -40,7 +40,7 @@ router.get("/search", (req, res) => {
             .then((data) => {
                 res.send({
                     success:true,
-                    results: data
+                    data: data
                 });
             }).catch((err) => {
             console.log(err);
@@ -177,7 +177,7 @@ router.post("/acceptfriend", (req, res) => {
  */
 router.get("/friends", (req, res) => {
     const user_id = req.query['user_id'];
-    const requests = req.query['requests'];
+    const requests = parseInt(req.query['requests']);
     if (user_id && requests == 1) { // Returns list of friend requests
         db.manyOrNone('SELECT U.username, U.short_desc, F.id, F.pending FROM friends AS F, users AS U' 
             +' WHERE (F.user1_id = $1 OR F.user2_id = $1) AND F.pending = TRUE AND U.id != $1', [user_id])

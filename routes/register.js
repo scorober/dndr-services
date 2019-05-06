@@ -1,10 +1,10 @@
-//express is the framework we're going to use to handle requests
+/*
+    Mostly webservices lab code.
+
+*/
 const express = require('express');
 
-//We use this create the SHA256 hash
 const crypto = require("crypto");
-
-//Create connection to Heroku Database
 let db = require('../utilities/utils').db;
 
 let getHash = require('../utilities/utils').getHash;
@@ -20,7 +20,7 @@ router.use(bodyParser.json());
 /**
  * Add a login for a user. 
  * Generate a salted_hash.
- * TODO: add email
+ * TODO: Send an email with registration here?
  */
 router.post('/', (req, res) => {
     res.type("application/json");
@@ -47,7 +47,8 @@ router.post('/', (req, res) => {
             db.none("INSERT INTO logins (user_id, email, password, salt) VALUES ($1, $2, $3, $4)", params)
             .then(() => {
                 res.send({
-                    success: true
+                    success: true,
+                    user_id: userId, 
                 });
                 // sendEmail("uwnetid@uw.edu", email, "Welcome!", "<strong>Welcome to our app!</strong>");
             }).catch((err) => {
@@ -76,8 +77,8 @@ router.post('/', (req, res) => {
  * Inserts user into the users table OR finds the entry for the same username. 
  * Returns the id for that user.
  * 
- * TODO: If the usernames here the registration should be aborted and the 
- * user should be notified the username exists.
+ * TODO: If the username exists the registration should be aborted and 
+ * user notified.
  */
 function getInsertUserId(username) {
     return db.task('getInsertUserId', t => {

@@ -49,7 +49,6 @@ CREATE TABLE message_thread (id SERIAL PRIMARY KEY,
                              message_id INTEGER REFERENCES messages(id));
 
 CREATE TABLE groups (id SERIAL PRIMARY KEY,
-                     title VARCHAR(255),
                      short_desc VARCHAR(255),
                      is_active BOOLEAN NOT NULL DEFAULT FALSE);
 
@@ -57,13 +56,17 @@ CREATE TABLE user_group (id SERIAL PRIMARY KEY,
                          user_id INTEGER REFERENCES users(id),
                          group_id INTEGER REFERENCES groups(id));
 
-CREATE TABLE dms (id SERIAL PRIMARY KEY,
-                  user_id INTEGER REFERENCES users(id));
+/* TODO: Is this table necessary? 
+Campaign could  have a reference to user_id that is the dm */
+-- CREATE TABLE dms (id SERIAL PRIMARY KEY,
+--                   user_id INTEGER REFERENCES users(id))
+--                   campaign_id INTEGER REFERENCES campaigns(id);
 
 CREATE TABLE campaigns (id SERIAL PRIMARY KEY, 
-                       dm_id INTEGER REFERENCES dms(id),
                        group_id INTEGER REFERENCES groups(id),
-                       is_active BOOLEAN NOT NULL DEFAULT FALSE);
+                       is_active BOOLEAN NOT NULL DEFAULT FALSE,
+                       title VARCHAR(255),
+                       dm_id INTEGER REFERENCES users(id));
 
 /*
     Added a constraint so that user1_id must be lower than user2_id.  Always query the database as [min, max].

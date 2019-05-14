@@ -45,9 +45,8 @@ router.post("/create", (req, res) => {
  * Returnas all groups a user is in by ID.
  * TODO: JOIN with groups to return Title etc.
  */
-router.post("/mygroups", (req, res) => {
-    let user_id = req.body['user_id'];
-    
+router.get("/mygroups", (req, res) => {
+    const user_id = req.query['user_id'];
     if (user_id) {
         db.manyOrNone('SELECT * FROM user_group WHERE user_id = $1', [user_id])
             .then((data) => {

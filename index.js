@@ -8,10 +8,10 @@ let middleware = require('./utilities/middleware');
 
 
 app.use('/login', require('./routes/login.js'));
-app.use('/campaign', require('./routes/campaign.js'));
 app.use('/register', require('./routes/register.js'));
 app.use('/u', require('./routes/user.js'));
 app.use('/g', require('./routes/group.js'));
+app.use('/c', require('./routes/campaign.js'));
 
 
 const bodyParser = require('body-parser');

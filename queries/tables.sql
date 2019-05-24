@@ -15,10 +15,9 @@ CREATE TABLE users (id SERIAL PRIMARY KEY,
                     username VARCHAR(255)  NOT NULL UNIQUE,
                     is_active BOOLEAN NOT NULL DEFAULT FALSE,
                     create_date DATE NOT NULL DEFAULT CURRENT_DATE,
-                    short_desc VARCHAR(255),
-                    long_desc VARCHAR(255),
-                    player_level INTEGER CHECK (player_level BETWEEN 1 AND 3)
-);
+                    short_desc VARCHAR(255) DEFAULT 'Hello world',
+                    long_desc VARCHAR(255) DEFAULT 'Hello world!',
+                    player_level INTEGER DEFAULT 1 CHECK (player_level BETWEEN 1 AND 3));
 
 CREATE TABLE logins (id SERIAL PRIMARY KEY,
                      user_id INTEGER REFERENCES users(id),

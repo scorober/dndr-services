@@ -26,6 +26,22 @@ router.get("/user", (req, res) => {
     })
 });
 
+router.get("/users", (req, res) => {
+    db.manyOrNone('SELECT id, username, short_desc FROM users')
+    .then((data) => {
+        res.send({
+            success: true,
+            data: data
+        });
+    }).catch((err) => {
+        console.log(err);
+        res.send({
+            success: false,
+            error: err
+        })
+    })
+});
+
 /** 
  * GET request to search for a user by username or id.
  */
@@ -248,7 +264,7 @@ router.post("/removefriend", (req, res) => {
 /**
  * Add a review.
  */
-router.post("/addReview", (req, res) => {
+router.post("/addreview", (req, res) => {
     const reviewed_id = req.body['reviewed_id'];
     const reviewer_id = req.body['reviewer_id'];
     const body = req.body['body'];

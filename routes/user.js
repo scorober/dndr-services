@@ -26,8 +26,10 @@ router.get("/user", (req, res) => {
     })
 });
 
+
+
 router.get("/users", (req, res) => {
-    db.manyOrNone('SELECT id, username, short_desc FROM users')
+    db.manyOrNone('SELECT * FROM users')
     .then((data) => {
         res.send({
             success: true,
@@ -51,7 +53,8 @@ router.get("/search", (req, res) => {
     const id = req.query['user_id'];
 
     if (username) {
-        db.manyOrNone('SELECT * FROM users WHERE username = $1', [username])
+        param = '%' + username + '%'
+        db.manyOrNone("SELECT * FROM users WHERE username LIKE $1", [param])
             .then((data) => {
                 res.send({
                     success:true,
@@ -271,14 +274,14 @@ router.post("/addreview", (req, res) => {
     const ranking = req.body['ranking'];
 
     if (reviewed_id && reviewer_id && body && ranking) {
-        db.none('INSERT INTO reviews (reviewer_id, reviewed_id, body, ranking) VALUES ($1, $2, $3, $4', [reviewer_id, reviewed_id, body, ranking])
+        db.none('INSERT INTO reviews (reviewer_id, reviewed_id, body, ranking) VALUES ($1, $2, $3, $4)', [reviewer_id, reviewed_id, body, ranking])
             .then(() => {
                 res.send({
                     success: true
                 });
             }).catch((err) => {
             //log the error
-            console.log(err);
+            console.log(err)
             res.send({
                 success: false,
                 error: err

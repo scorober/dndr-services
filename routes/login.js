@@ -1,4 +1,8 @@
-//express is the framework we're going to use to handle requests
+/*
+    Login endpoint implemented from lab.
+
+
+*/
 const express = require('express');
 
 //Create connection to Heroku Database
@@ -25,10 +29,10 @@ let config = {
 router.post('/', (req, res) => {
     let email = req.body['email'];
     let theirPw = req.body['password'];
-    
+
     if(email && theirPw) {
         //Using the 'one' method means that only one row should be returned
-        db.one('SELECT user_id, password, salt FROM logins WHERE email=$1', [email])
+        db.one('SELECT username, user_id, password, salt FROM logins AS L, users AS U WHERE L.email=$1 AND U.id = L.user_id', [email])
             .then(row => { //If successful, run function passed into .then()
                 let salt = row['salt'];
                 //Retrieve our copy of the password
@@ -54,19 +58,17 @@ router.post('/', (req, res) => {
                         success: true,
                         message: 'Authentication successful!',
                         token: token,
-                        user_id: row.user_id  // return user id belonging to login
+                        user_id: row.user_id,  // return user id belonging to login
+                        username: row.username
                     });
-                } else {
-                    //credentials did not match
+                } else {  // Invalid credentials.
                     res.send({
                         success: false,
                         message: 'Credentials do not match'
                     });
                 }
             })
-            //More than one row shouldn't be found, since table has constraint on it
-            .catch((err) => { // Ending up here when loggin in 
-                //If anything happened, it wasn't successful
+            .catch((err) => {
                 res.send({
                     success: false,
                     message: err

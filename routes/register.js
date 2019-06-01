@@ -19,6 +19,8 @@ router.use(bodyParser.json());
 
 /**
  * Add a login for a user. 
+ *
+ * Register a new account. Create a new entry in Login and User relations.  
  * Generate a salted_hash.
  * TODO: Send an email with registration here?
  */
@@ -30,7 +32,7 @@ router.post('/', (req, res) => {
     var email = req.body['email'];
     var password = req.body['password'];
 
-    //Verify that the caller supplied all the parameters
+  
     if(username && email && password) {
         //We're storing salted hashes to make our application more secure
         //If you're interested as to what that is, and why we should use it
@@ -48,7 +50,7 @@ router.post('/', (req, res) => {
             .then(() => {
                 res.send({
                     success: true,
-                    user_id: userId, 
+                    user_id: userId, // Return generated user Id to front end.
                 });
                 // sendEmail("uwnetid@uw.edu", email, "Welcome!", "<strong>Welcome to our app!</strong>");
             }).catch((err) => {
@@ -84,7 +86,8 @@ function getInsertUserId(username) {
     return db.task('getInsertUserId', t => {
             return t.oneOrNone('SELECT id FROM users WHERE username = $1', username, u => u && u.id)
                 .then(userId => {
-                    return userId || t.one('INSERT INTO Users(username) VALUES($1) RETURNING id', username, u => u.id);
+                    return userId 
+                    || t.one('INSERT INTO users(username) VALUES($1) RETURNING id', username, u => u.id);
                 });
         });
 }

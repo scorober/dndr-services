@@ -166,9 +166,11 @@ router.post("/addfriend", (req, res) => {
  * Accept a pending friend request by setting pending false.
  */
 router.post("/acceptfriend", (req, res) => {
+    const user1_id = min(req.body['user1_id'], req.body['user2_id'])
+    const user2_id = max(req.body['user1_id'], req.body['user2_id'])
     const friend_id = req.body['friend_id'];
-    if (friend_id) {
-        db.none("UPDATE friends SET pending = FALSE WHERE id = $1", [friend_id])
+    if (user1_id && user2_id) {
+        db.none("UPDATE friends SET pending = FALSE WHERE user1_id = $1 AND user2_id = $2", [user1_id, user2_id])
         .then(() => {
             res.send({
                 success:true,
@@ -197,8 +199,7 @@ router.get("/friends", (req, res) => {
     const user_id = req.query['user_id'];
     const requests = parseInt(req.query['requests']);
     if (user_id && requests == 1) { // Returns list of friend requests
-        db.manyOrNone('SELECT U.username, U.id, U.short_desc, F.id AS friend_id, F.pending FROM friends AS F, users AS U' 
-            +' WHERE (F.user1_id = $1 OR F.user2_id = $1) AND F.pending = TRUE AND U.id != $1', [user_id])
+        db.manyOrNone('SELECT U.id, U.username, u.short_desc from users AS U join friends AS F on (U.id = F.user1_id OR U.id = F.user2_id) WHERE (F.user1_id = 1 OR F.user2_id = 1) AND U.id != 1 AND F.pending = TRUE', [user_id])
             .then((data) => {
                 res.send({
                     success:true,
@@ -212,8 +213,21 @@ router.get("/friends", (req, res) => {
                 })
             })
     } else if (user_id && requests == 2) { // Returns list of friends
-        db.manyOrNone('SELECT U.username, U.id, U.short_desc, F.id AS friend_id, F.pending FROM friends AS F, users AS U' 
-        +' WHERE (F.user1_id = $1 OR F.user2_id = $1) AND F.pending = FALSE AND U.id != $1', [user_id])
+        db.manyOrNone('SELECT U.id, U.username, U.short_desc FROM users AS U JOIN friends AS F ON (U.id = F.user1_id OR U.id = F.user2_id) WHERE (F.user1_id = $1 OR F.user2_id = $1) AND U.id != $1 AND F.pending = FALSE', [user_id])
+        .then((data) => {
+            res.send({
+                success:true,
+                data: data
+            })
+        }).catch((err) => {
+            console.log(err);
+            res.send({
+                success: false,
+                error: err
+            })
+        })
+    } else if (user_id && requests == 3) {
+        db.manyOrNone('SELECT U.id, U.username, U.short_desc, F.pending FROM users AS U JOIN friends AS F ON (U.id = F.user1_id OR U.id = F.user2_id) WHERE (F.user1_id = $1 OR F.user2_id = $1) AND U.id != $1', [user_id])
         .then((data) => {
             res.send({
                 success:true,

@@ -197,7 +197,7 @@ router.get("/friends", (req, res) => {
     const user_id = req.query['user_id'];
     const requests = parseInt(req.query['requests']);
     if (user_id && requests == 1) { // Returns list of friend requests
-        db.manyOrNone('SELECT U.username, U.short_desc, F.id, F.pending FROM friends AS F, users AS U' 
+        db.manyOrNone('SELECT U.username, U.id, U.short_desc, F.id AS friend_id, F.pending FROM friends AS F, users AS U' 
             +' WHERE (F.user1_id = $1 OR F.user2_id = $1) AND F.pending = TRUE AND U.id != $1', [user_id])
             .then((data) => {
                 res.send({
@@ -212,7 +212,7 @@ router.get("/friends", (req, res) => {
                 })
             })
     } else if (user_id && requests == 2) { // Returns list of friends
-        db.manyOrNone('SELECT U.username, U.short_desc, F.id, F.pending FROM friends AS F, users AS U' 
+        db.manyOrNone('SELECT U.username, U.id, U.short_desc, F.id AS friend_id, F.pending FROM friends AS F, users AS U' 
         +' WHERE (F.user1_id = $1 OR F.user2_id = $1) AND F.pending = FALSE AND U.id != $1', [user_id])
         .then((data) => {
             res.send({
